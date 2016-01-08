@@ -23,8 +23,12 @@ en:
       help:
         help:
           help_value: Lists help information for terms and command the robot will respond to.
-          help_command_key: help COMMAND
-          help_command_value: Lists help information for terms or commands that begin with COMMAND.
+          help_command_key: "help HANDLER [COMMAND]"
+          help_command_value: Lists help information for terms or commands in HANDLER that match COMMAND.
+          help_handler_key: help HANDLER
+          help_handler_value: Lists available commands for HANDLER.
+          info: "Type '%{address}help HANDLER' to list terms or commands for that handler. You may optionally specify a substring on which to filter after the handler name. The following handlers are installed:"
+          unauthorized: " [Unauthorized]"
       info:
         help:
           info_value: Replies with the current version of Lita.

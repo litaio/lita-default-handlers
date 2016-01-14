@@ -28,6 +28,7 @@ en:
           help_handler_key: help HANDLER
           help_handler_value: Lists available commands for HANDLER.
           info: "Type '%{address}help HANDLER' to list terms or commands for that handler. You may optionally specify a substring on which to filter after the handler name. The following handlers are installed:"
+          no_handler_found: "No matching handlers found for '%{handler}'"
           unauthorized: " [Unauthorized]"
       info:
         help:

@@ -40,16 +40,16 @@ module Lita
       # Creates an alphabetically-sorted array containing the names of all
       # installed handlers.
       def list_handlers
-        robot.handlers.map do |handler|
+        robot.handlers.flat_map do |handler|
           handler.namespace if handler.respond_to?(:routes)
-        end.flatten.compact.sort
+        end.compact.sort
       end
 
       # Creates an array of help info for a specified handler. Optionally
       # filters commands matching a given substring.
       def list_commands(handler_name, substring, user)
         handlers = robot.handlers.select { |handler| handler.namespace == handler_name.strip.downcase }
-        return ["No matching handlers found for '#{handler_name}'"] if handlers.empty?
+        return [t('help.no_handler_found', handler: handler_name)] if handlers.empty?
         output = handlers.map do |handler|
           handler.routes.map do |route|
             route.help.map do |command, description|

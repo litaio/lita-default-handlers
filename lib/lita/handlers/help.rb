@@ -42,7 +42,7 @@ module Lita
       def list_handlers
         robot.handlers.flat_map do |handler|
           handler.namespace if handler.respond_to?(:routes)
-        end.compact.sort
+        end.compact.uniq.sort
       end
 
       # Creates an array of help info for a specified handler. Optionally
@@ -65,7 +65,9 @@ module Lita
       # Filters the help output by an optional command.
       def filter_help(output, substring)
         return output if substring.nil?
-        output.select { |line| /(?:@?#{address})?#{substring}/i === line }
+        output.select do |line|
+          /(?:@?#{Regexp.escape(address)})?#{Regexp.escape(substring)}/i === line
+        end
       end
 
       # Formats an individual command's help message.

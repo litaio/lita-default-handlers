@@ -17,15 +17,23 @@ describe Lita::Handlers::Help, lita_handler: true do
       end
     end
 
+    let(:dummy_handler_class2) do
+      Class.new(Lita::Handler) do
+        def self.name
+          "Dummy2"
+        end
+
+        namespace 'Dummy'
+      end
+    end
+
     before do
       registry.register_handler(dummy_handler_class)
-      allow(Gem).to receive(:loaded_specs).and_return(
-        { 'lita-dummy' => double('Gem', description: 'A dummy handler.') }
-      )
+      registry.register_handler(dummy_handler_class2)
       allow(robot.config.robot).to receive(:alias).and_return("!")
     end
 
-    it "lists all installed handlers in alphabetical order" do
+    it "lists all installed handlers in alphabetical order with duplicates removed" do
       send_command("help")
       expect(replies.last).to match(/^Type '!help HANDLER'.+installed:\ndummy\nhelp$/)
     end

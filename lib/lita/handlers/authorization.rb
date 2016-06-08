@@ -5,6 +5,8 @@ module Lita
     class Authorization
       extend Handler::ChatRouter
 
+      feature :async_dispatch
+
       route(
         /^auth\s+add/,
         :add,

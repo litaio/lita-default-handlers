@@ -5,6 +5,8 @@ module Lita
     class Help
       extend Handler::ChatRouter
 
+      feature :async_dispatch
+
       route(
         /^help\s*((?<handler>\S+)\s*(?<substring>.+)?)?/i,
         :help, command: true, help: {

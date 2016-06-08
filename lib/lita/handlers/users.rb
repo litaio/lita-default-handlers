@@ -5,6 +5,8 @@ module Lita
     class Users
       extend Handler::ChatRouter
 
+      feature :async_dispatch
+
       route(/^users\s+find\s+(.+)/i, :find, command: true, help: {
         t("help.find_key") => t("help.find_value")
       })

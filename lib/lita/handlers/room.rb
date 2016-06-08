@@ -6,6 +6,8 @@ module Lita
     class Room
       extend Handler::ChatRouter
 
+      feature :async_dispatch
+
       route(/^join\s+(.+)$/i, :join, command: true, restrict_to: :admins, help: {
         t("help.join_key") => t("help.join_value")
       })

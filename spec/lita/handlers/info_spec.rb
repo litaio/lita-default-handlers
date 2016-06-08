@@ -25,7 +25,7 @@ describe Lita::Handlers::Info, lita_handler: true do
   end
 
   describe "#web" do
-    let(:json) { MultiJson.load(response.body.join) }
+    let(:json) { JSON.load(response.body.join) }
 
     it "returns JSON" do
       subject.web(request, response)

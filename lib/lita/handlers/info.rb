@@ -1,3 +1,5 @@
+require "json"
+
 module Lita
   # A namespace to hold all subclasses of {Handler}.
   module Handlers
@@ -32,7 +34,7 @@ module Lita
       # @return [void]
       def web(_request, response)
         response.headers["Content-Type"] = "application/json"
-        json = MultiJson.dump(
+        json = JSON.dump(
           adapter: robot.config.robot.adapter,
           lita_version: Lita::VERSION,
           redis_memory_usage: redis_memory_usage,

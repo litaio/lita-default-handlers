@@ -14,6 +14,9 @@ describe Lita::Handlers::Help, lita_handler: true do
         route(/secret/, :secret, restrict_to: :the_nobodies, help: {
           "secret" => "This help message should be accompanied by a caveat"
         })
+
+        def secret(response)
+        end
       end
     end
 
@@ -24,29 +27,56 @@ describe Lita::Handlers::Help, lita_handler: true do
         end
 
         namespace 'Dummy'
+
+        route(/foo/, :foo, help: { "foo" => "foo" })
+
+        def foo(response)
+        end
+      end
+    end
+
+    let(:another_handler) do
+      Class.new(Lita::Handler) do
+        def self.name
+          "Another"
+        end
+
+        route(/bar dummy/, :bar, help: { "bar dummy" => "bar" })
+        route(/baz/, :baz, help: { "baz" => "baz dummy" })
+
+        def bar(response)
+        end
+
+        def baz(response)
+        end
       end
     end
 
     before do
       registry.register_handler(dummy_handler_class)
       registry.register_handler(dummy_handler_class2)
+      registry.register_handler(another_handler)
       allow(robot.config.robot).to receive(:alias).and_return("!")
     end
 
     it "lists all installed handlers in alphabetical order with duplicates removed" do
       send_command("help")
-      expect(replies.last).to match(/^Type '!help HANDLER'.+installed:\ndummy\nhelp$/)
+      expect(replies.last).to match(/^Type '!help STRING'.+installed:\nanother\ndummy\nhelp$/)
     end
 
     it "sends help information for all commands under a given handler" do
-      send_command("help help")
-      expect(replies.last).to match(/!help(?:.+!help HANDLER){2}/m)
+      send_command("help another")
+      expect(replies.last).to match(/bar.+baz/m)
     end
 
-    it "sends help information for commands matching a substring under a given handler" do
-      send_command("help help available")
-      expect(replies.last).to match(/!help HANDLER - Lists/)
-      expect(replies.last).not_to match(/help information/)
+    it "sends help information for all commands matching a given substring" do
+      send_command("help foo")
+      expect(replies.last).to match(/foo/)
+    end
+
+    it "sends help information for all relevant commands when the given substring matches a handler + individual help messages" do
+      send_command("help dummy")
+      expect(replies.last).to match(/secret.+foo.+bar.+baz/m)
     end
 
     it "uses the mention name when no alias is defined" do
@@ -55,9 +85,9 @@ describe Lita::Handlers::Help, lita_handler: true do
       expect(replies.last).to match(/#{robot.mention_name}: help/)
     end
 
-    it "responds with an error if no matching handler is installed" do
+    it "responds with an error if the given substring has no matches" do
       send_command("help asdf")
-      expect(replies.last).to match(/^No matching handlers found for 'asdf'$/)
+      expect(replies.last).to match(/^No matching handlers or commands found.$/)
     end
 
     it "doesn't crash if a handler doesn't have routes" do
@@ -78,13 +108,13 @@ describe Lita::Handlers::Help, lita_handler: true do
       end
 
       it "shows the unauthorized message for commands the user doesn't have access to" do
-        send_command("help dummy")
+        send_command("help secret")
         expect(replies.last).to include("secret")
         expect(replies.last).to include("Unauthorized")
       end
 
       it "omits the unauthorized message if the user has access" do
-        send_command("help dummy", as: authorized_user)
+        send_command("help secret", as: authorized_user)
         expect(replies.last).to include("secret")
         expect(replies.last).not_to include("Unauthorized")
       end

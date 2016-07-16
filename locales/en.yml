@@ -23,12 +23,11 @@ en:
       help:
         help:
           help_value: Lists help information for terms and command the robot will respond to.
-          help_command_key: "help HANDLER [COMMAND]"
-          help_command_value: Lists help information for terms or commands in HANDLER that match COMMAND.
-          help_handler_key: help HANDLER
-          help_handler_value: Lists available commands for HANDLER.
-          info: "Type '%{address}help HANDLER' to list terms or commands for that handler. You may optionally specify a substring on which to filter after the handler name. The following handlers are installed:"
-          no_handler_found: "No matching handlers found for '%{handler}'"
+          help_string_key: "help STRING"
+          help_string_value: Lists help information for commands matching STRING.
+          handler_contains: "Handler '%{handler}' defines the following commands"
+          info: "Type '%{address}help STRING' to see matching help messages. STRING may either be the name of a handler or text matching a command/description. The following handlers are installed:"
+          no_help_found: "No matching handlers or commands found."
           unauthorized: " [Unauthorized]"
       info:
         help:
